@@ -7,14 +7,12 @@ description: Jail Plugin
 commands:
   ex:
     description: Base command for EXAMPLE
-    usage: "For a list of commands, type /ex help"
-    aliases: example
-permissions:
-  example.test:
-    description: DESCRIPTION
-    default: true
-  example.*:
-    description: Grants all other permissions
-    default: false
-    children:
-      example.test: true
+    usage: "/ex help"
+    aliases: [example]
+  hello:
+    description: Says hello to the player
+    usage: "/hello"
+  setupJail:
+    description: Setup the jail
+    usage: "/setupJail"
+
