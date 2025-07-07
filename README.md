@@ -2,10 +2,7 @@
 A template for building PaperMC/Spigot Minecraft server plugins!
 
 <!-- TODO: CHANGE ME -->
-[![Test and Release](https://github.com/CrimsonWarpedcraft/plugin-template/actions/workflows/main.yml/badge.svg)](https://github.com/CrimsonWarpedcraft/plugin-template/actions/workflows/main.yml)
-
-<!-- TODO: CHANGE ME -->
-[![](https://dcbadge.limes.pink/api/server/5XMmeV6EtJ)](https://discord.gg/5XMmeV6EtJ)
+[![Test and Release](https://github.com/Csheehan18/Jail-Plugin/actions/workflows/main.yml/badge.svg)](https://github.com/Csheehan18/Jail-Plugin/actions/workflows/main.yml)
 
 ## Features
 ### Github Actions 🎬
