@@ -61,8 +61,13 @@ public class JailPlugin extends JavaPlugin {
             }
 
             String worldName = getConfig().getString("jail.world");
-            World world = Bukkit.getWorld(worldName);
 
+            if (worldName == null || worldName.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "Jail world is not set.");
+                return true;
+            }
+
+            World world = Bukkit.getWorld(worldName);
             if (world == null) {
                 player.sendMessage(ChatColor.RED + "Jail world '" + worldName + "' is not loaded.");
                 return true;
