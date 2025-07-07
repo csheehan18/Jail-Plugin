@@ -100,14 +100,14 @@ For more information, see [Discord Message Notify](https://github.com/marketplac
 Update the line below with the name of your plugin.
 
 ```groovy
-rootProject.name = 'ExamplePlugin'
+rootProject.name = 'plugin'
 ```
 
 ### build.gradle
 Make sure to update the `group` to your package's name in the following section.
 
 ```groovy
-group = "com.crimsonwarpedcraft.exampleplugin"
+group = "com.corn.plugin"
 ```
 
 Add any required repositories for your dependencies in the following section.
