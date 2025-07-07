@@ -1,5 +1,4 @@
-# PaperMC/Spigot Minecraft Server Plugin Template
-A template for building PaperMC/Spigot Minecraft server plugins!
+# Jail Plugin
 
 <!-- TODO: CHANGE ME -->
 [![Test and Release](https://github.com/Csheehan18/Jail-Plugin/actions/workflows/main.yml/badge.svg)](https://github.com/Csheehan18/Jail-Plugin/actions/workflows/main.yml)
@@ -22,8 +21,6 @@ A template for building PaperMC/Spigot Minecraft server plugins!
 
 ### Gradle Builds 🏗
 * Shadowed [PaperLib](https://github.com/PaperMC/PaperLib) build
-* [Checkstyle](https://checkstyle.org/) Google standard style check
-* [SpotBugs](https://spotbugs.github.io/) code analysis
 * [JUnit](https://junit.org/) testing
 
 ### Config Files 📁
@@ -130,10 +127,7 @@ Also, update your dependencies as needed (of course).
 ```groovy
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.6-R0.1-SNAPSHOT'
-    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.9.3'
     implementation 'io.papermc:paperlib:1.0.8'
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
-    testCompileOnly 'com.github.spotbugs:spotbugs-annotations:4.9.3'
     testImplementation 'io.papermc.paper:paper-api:1.21.6-R0.1-SNAPSHOT'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.13.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.1'
