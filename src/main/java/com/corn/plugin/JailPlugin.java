@@ -331,4 +331,9 @@ public class JailPlugin extends JavaPlugin implements Listener {
             jailTasks.remove(uuid);
         }
     }
+
+    public String getJailStickName() {
+        // Return the jail stick name from config or a default value
+        return getConfig().getString("jail.stick-name", "§cJail Stick"); // §c is red color code
+    }
 }
