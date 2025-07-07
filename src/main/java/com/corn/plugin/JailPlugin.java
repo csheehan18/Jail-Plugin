@@ -1,5 +1,6 @@
 package com.corn.plugin;
 
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -8,10 +9,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import io.papermc.lib.PaperLib;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class JailPlugin extends JavaPlugin {
+
+    private final Map<UUID, Location> jailedPlayers = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -39,29 +45,38 @@ public class JailPlugin extends JavaPlugin {
             getConfig().set("jail.x", loc.getX());
             getConfig().set("jail.y", loc.getY());
             getConfig().set("jail.z", loc.getZ());
+            getConfig().set("jail.yaw", loc.getYaw());
+            getConfig().set("jail.pitch", loc.getPitch());
             saveConfig();
-            player.sendMessage(ChatColor.GREEN + "Jail location set to your current position.");
+            player.sendMessage(ChatColor.GREEN + "Jail location saved.");
             return true;
         }
 
-        // /jail <player>
-        if (args.length == 1) {
+        // /jail <player> <seconds>
+        if (args.length == 2) {
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null || !target.isOnline()) {
                 player.sendMessage(ChatColor.RED + "Player not found or not online.");
                 return true;
             }
 
+            int jailTime;
+            try {
+                jailTime = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                player.sendMessage(ChatColor.RED + "Invalid time. Use number of seconds.");
+                return true;
+            }
+
             if (!getConfig().contains("jail.world") ||
-                    !getConfig().contains("jail.x") ||
-                    !getConfig().contains("jail.y") ||
-                    !getConfig().contains("jail.z")) {
-                player.sendMessage(ChatColor.RED + "Jail location has not been set.");
+                !getConfig().contains("jail.x") ||
+                !getConfig().contains("jail.y") ||
+                !getConfig().contains("jail.z")) {
+                player.sendMessage(ChatColor.RED + "Jail location not set. Use /jail setup first.");
                 return true;
             }
 
             String worldName = getConfig().getString("jail.world");
-
             if (worldName == null || worldName.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Jail world is not set.");
                 return true;
@@ -76,17 +91,36 @@ public class JailPlugin extends JavaPlugin {
             double x = getConfig().getDouble("jail.x");
             double y = getConfig().getDouble("jail.y");
             double z = getConfig().getDouble("jail.z");
+            float yaw = (float) getConfig().getDouble("jail.yaw");
+            float pitch = (float) getConfig().getDouble("jail.pitch");
 
-            Location jailLoc = new Location(world, x, y, z);
+            Location jailLoc = new Location(world, x, y, z, yaw, pitch);
+            Location originalLoc = target.getLocation();
+            jailedPlayers.put(target.getUniqueId(), originalLoc);
+
             target.teleport(jailLoc);
+            target.sendMessage(ChatColor.RED + "You have been jailed for " + jailTime + " seconds.");
+            player.sendMessage(ChatColor.YELLOW + target.getName() + " jailed for " + jailTime + " seconds.");
 
-            player.sendMessage(ChatColor.GREEN + "Teleported " + target.getName() + " to the jail.");
-            target.sendMessage(ChatColor.RED + "You have been jailed by " + player.getName() + "!");
+            // Schedule unjail
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Location original = jailedPlayers.remove(target.getUniqueId());
+                    if (original != null && target.isOnline()) {
+                        target.teleport(original);
+                        target.sendMessage(ChatColor.GREEN + "You have been released from jail.");
+                    }
+                }
+            }.runTaskLater(this, jailTime * 20L); // 20 ticks/sec
+
             return true;
         }
 
-        // Fallback message
-        player.sendMessage(ChatColor.YELLOW + "Usage: /jail setup or /jail <player>");
+        // Help or fallback
+        player.sendMessage(ChatColor.YELLOW + "Usage:");
+        player.sendMessage(ChatColor.YELLOW + "/jail setup");
+        player.sendMessage(ChatColor.YELLOW + "/jail <player> <seconds>");
         return true;
     }
 }

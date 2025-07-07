@@ -6,6 +6,6 @@ author: Corn
 description: Jail Plugin
 commands:
   jail:
-    description: Jail command with subcommands
-    usage: /jail <setup|playername>
+    description: Manage jails and punishments
+    usage: /jail <setup|player> [time]
 
