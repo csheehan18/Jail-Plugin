@@ -15,6 +15,7 @@ public class JailHitListener implements Listener {
 
     private final JailPlugin plugin;
 
+    @SuppressWarnings("EI_EXPOSE_REP2")
     public JailHitListener(JailPlugin plugin) {
         this.plugin = plugin;
     }

@@ -15,6 +15,7 @@ public class JailItemUtils {
      * Creates a custom "Jail Stick" item.
      * @return Jail stick item
      */
+    @SuppressWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
     public static ItemStack createJailStick() {
         ItemStack stick = new ItemStack(Material.STICK);
         ItemMeta meta = stick.getItemMeta();
