@@ -8,4 +8,7 @@ commands:
   jail:
     description: Manage jails and punishments
     usage: /jail <setup|player> [time]
+  jailstick:
+    description: Gives player stick to send people to jail, make sure they are guilty before you send them or else...
+    usage: /jailstick <player>
 

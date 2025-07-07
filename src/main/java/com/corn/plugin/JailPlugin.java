@@ -1,6 +1,9 @@
 package com.corn.plugin;
 
-import io.papermc.lib.PaperLib;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,13 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import io.papermc.lib.PaperLib;
 
 public class JailPlugin extends JavaPlugin {
 
     private final Map<UUID, Location> jailedPlayers = new HashMap<>();
+    int defaultJailTime = getConfig().getInt("jail.duration", 10);
 
     @Override
     public void onEnable() {
@@ -27,9 +29,7 @@ public class JailPlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!command.getName().equalsIgnoreCase("jail")) {
-            return false;
-        }
+        if (!command.getName().equalsIgnoreCase("jail")) return false;
 
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players can use this command.");
@@ -68,59 +68,65 @@ public class JailPlugin extends JavaPlugin {
                 return true;
             }
 
-            if (!getConfig().contains("jail.world") ||
-                !getConfig().contains("jail.x") ||
-                !getConfig().contains("jail.y") ||
-                !getConfig().contains("jail.z")) {
-                player.sendMessage(ChatColor.RED + "Jail location not set. Use /jail setup first.");
-                return true;
+            boolean success = jailPlayer(target, jailTime);
+            if (success) {
+                player.sendMessage(ChatColor.YELLOW + target.getName() + " jailed for " + jailTime + " seconds.");
+            } else {
+                player.sendMessage(ChatColor.RED + "Failed to jail player. Is jail location set?");
             }
-
-            String worldName = getConfig().getString("jail.world");
-            if (worldName == null || worldName.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Jail world is not set.");
-                return true;
-            }
-
-            World world = Bukkit.getWorld(worldName);
-            if (world == null) {
-                player.sendMessage(ChatColor.RED + "Jail world '" + worldName + "' is not loaded.");
-                return true;
-            }
-
-            double x = getConfig().getDouble("jail.x");
-            double y = getConfig().getDouble("jail.y");
-            double z = getConfig().getDouble("jail.z");
-            float yaw = (float) getConfig().getDouble("jail.yaw");
-            float pitch = (float) getConfig().getDouble("jail.pitch");
-
-            Location jailLoc = new Location(world, x, y, z, yaw, pitch);
-            Location originalLoc = target.getLocation();
-            jailedPlayers.put(target.getUniqueId(), originalLoc);
-
-            target.teleport(jailLoc);
-            target.sendMessage(ChatColor.RED + "You have been jailed for " + jailTime + " seconds.");
-            player.sendMessage(ChatColor.YELLOW + target.getName() + " jailed for " + jailTime + " seconds.");
-
-            // Schedule unjail
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    Location original = jailedPlayers.remove(target.getUniqueId());
-                    if (original != null && target.isOnline()) {
-                        target.teleport(original);
-                        target.sendMessage(ChatColor.GREEN + "You have been released from jail.");
-                    }
-                }
-            }.runTaskLater(this, jailTime * 20L); // 20 ticks/sec
 
             return true;
         }
 
-        // Help or fallback
+        // Help
         player.sendMessage(ChatColor.YELLOW + "Usage:");
         player.sendMessage(ChatColor.YELLOW + "/jail setup");
         player.sendMessage(ChatColor.YELLOW + "/jail <player> <seconds>");
+        return true;
+    }
+
+    /**
+     * Jails the specified player for a number of seconds.
+     * Returns false if jail config is invalid.
+     */
+    public boolean jailPlayer(Player target, int seconds) {
+        if (!getConfig().contains("jail.world") ||
+            !getConfig().contains("jail.x") ||
+            !getConfig().contains("jail.y") ||
+            !getConfig().contains("jail.z")) {
+            return false;
+        }
+
+        String worldName = getConfig().getString("jail.world");
+        if (worldName == null || worldName.isEmpty()) return false;
+
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) return false;
+
+        double x = getConfig().getDouble("jail.x");
+        double y = getConfig().getDouble("jail.y");
+        double z = getConfig().getDouble("jail.z");
+        float yaw = (float) getConfig().getDouble("jail.yaw");
+        float pitch = (float) getConfig().getDouble("jail.pitch");
+
+        Location jailLoc = new Location(world, x, y, z, yaw, pitch);
+        Location originalLoc = target.getLocation();
+        jailedPlayers.put(target.getUniqueId(), originalLoc);
+
+        target.teleport(jailLoc);
+        target.sendMessage(ChatColor.RED + "You have been jailed for " + seconds + " seconds.");
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Location original = jailedPlayers.remove(target.getUniqueId());
+                if (original != null && target.isOnline()) {
+                    target.teleport(original);
+                    target.sendMessage(ChatColor.GREEN + "You have been released from jail.");
+                }
+            }
+        }.runTaskLater(this, seconds * 20L); // 20 ticks per second
+
         return true;
     }
 }
