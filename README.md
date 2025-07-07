@@ -168,26 +168,26 @@ permissions:
 ```
 
 ### .github/dependabot.yml
-You will need to replace all instances of `leviem1`, such as the one below, with your GitHub
+You will need to replace all instances of `csheehan18`, such as the one below, with your GitHub
 username.
 
 ```yaml
 reviewers:
-  - "leviem1"
+  - "csheehan18"
 ```
 
 ### .github/CODEOWNERS
-You will need to replace `leviem1`, with your GitHub username.
+You will need to replace `csheehan18`, with your GitHub username.
 
 ```text
-*   @leviem1
+*   @csheehan18
 ```
 
 ### .github/FUNDING.yml
 Update or delete this file, whatever applies to you.
 
 ```yaml
-github: leviem1
+github: csheehan18
 ```
 
 For more information see: [Displaying a sponsor button in your repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository)
