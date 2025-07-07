@@ -47,25 +47,30 @@ public class JailPlugin extends JavaPlugin {
         // /jail <player>
         if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
-            if (target == null) {
-                player.sendMessage(ChatColor.RED + "Player not found.");
+            if (target == null || !target.isOnline()) {
+                player.sendMessage(ChatColor.RED + "Player not found or not online.");
                 return true;
             }
 
-            if (!getConfig().contains("jail.world")) {
-                player.sendMessage(ChatColor.RED + "Jail location has not been set yet.");
+            if (!getConfig().contains("jail.world") ||
+                    !getConfig().contains("jail.x") ||
+                    !getConfig().contains("jail.y") ||
+                    !getConfig().contains("jail.z")) {
+                player.sendMessage(ChatColor.RED + "Jail location has not been set.");
                 return true;
             }
 
-            World world = Bukkit.getWorld(getConfig().getString("jail.world"));
+            String worldName = getConfig().getString("jail.world");
+            World world = Bukkit.getWorld(worldName);
+
+            if (world == null) {
+                player.sendMessage(ChatColor.RED + "Jail world '" + worldName + "' is not loaded.");
+                return true;
+            }
+
             double x = getConfig().getDouble("jail.x");
             double y = getConfig().getDouble("jail.y");
             double z = getConfig().getDouble("jail.z");
-
-            if (world == null) {
-                player.sendMessage(ChatColor.RED + "Jail world does not exist.");
-                return true;
-            }
 
             Location jailLoc = new Location(world, x, y, z);
             target.teleport(jailLoc);
@@ -75,6 +80,7 @@ public class JailPlugin extends JavaPlugin {
             return true;
         }
 
+        // Fallback message
         player.sendMessage(ChatColor.YELLOW + "Usage: /jail setup or /jail <player>");
         return true;
     }
