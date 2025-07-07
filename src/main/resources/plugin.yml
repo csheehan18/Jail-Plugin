@@ -5,14 +5,7 @@ api-version: "1.21.1"
 author: Corn
 description: Jail Plugin
 commands:
-  ex:
-    description: Base command for EXAMPLE
-    usage: "/ex help"
-    aliases: [example]
-  hello:
-    description: Says hello to the player
-    usage: "/hello"
-  setupJail:
-    description: Setup the jail
-    usage: "/setupJail"
+  jail:
+    description: Jail command with subcommands
+    usage: /jail <setup|playername>
 
