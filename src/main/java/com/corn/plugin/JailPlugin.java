@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -36,14 +35,17 @@ public class JailPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         PaperLib.suggestPaper(this);
         saveDefaultConfig();
+        // Register the main plugin class for join/quit events
         getServer().getPluginManager().registerEvents(this, this);
+        // Register the hit listener so /jailc stick actually jails on hit
+        getServer().getPluginManager().registerEvents(new JailHitListener(this), this);
 
         jailStickName = ChatColor.translateAlternateColorCodes('&',
             getConfig().getString("jail.stick-name", "&cJail Stick"));
         defaultJailDuration = getConfig().getInt("jail.duration", 10);
-
         loadJailedPlayersFromConfig();
     }
+
 
     @Override
     public void onDisable() {
