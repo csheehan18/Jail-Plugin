@@ -9,11 +9,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class JailItemUtils {
 
-    /**
-     * Creates a custom "Jail Stick" item with the given display name.
-     * @param displayName the name to show on the stick
-     * @return Jail stick item
-     */
     public static ItemStack createJailStick(String displayName) {
         ItemStack stick = new ItemStack(Material.STICK);
         ItemMeta meta = stick.getItemMeta();
@@ -25,13 +20,7 @@ public class JailItemUtils {
         return stick;
     }
 
-    /**
-     * Checks if the given item is the Jail Stick.
-     * @param item Item to check
-     * @param jailStickName The expected jail stick display name
-     * @return true if it's the Jail Stick
-     */
-    public static boolean isJailStick(org.bukkit.inventory.ItemStack item, String jailStickName) {
+    public static boolean isJailStick(ItemStack item, String jailStickName) {
         if (item == null || item.getType() != Material.STICK) return false;
         if (!item.hasItemMeta()) return false;
 

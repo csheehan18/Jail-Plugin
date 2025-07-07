@@ -26,7 +26,6 @@ public class JailHitListener implements Listener {
 
         if (!JailItemUtils.isJailStick(item, plugin.getJailStickName())) return;
 
-        // Jail the target using default duration from config
         boolean success = plugin.jailPlayer(target, plugin.getConfig().getInt("jail.duration", 10));
         if (success) {
             damager.sendMessage(ChatColor.GREEN + "You jailed " + target.getName() + "!");
