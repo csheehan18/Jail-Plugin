@@ -1,2 +1,3 @@
 jail:
   duration: 10 # duration of how long prisoners are jailed by stick in seconds
+  stick-name: "&cJail Stick"

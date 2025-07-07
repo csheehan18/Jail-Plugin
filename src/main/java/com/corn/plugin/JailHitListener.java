@@ -2,14 +2,11 @@ package com.corn.plugin;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 public class JailHitListener implements Listener {
 
@@ -27,17 +24,15 @@ public class JailHitListener implements Listener {
         ItemStack item = damager.getInventory().getItemInMainHand();
         if (item.getType() != Material.STICK) return;
 
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null || !meta.getPersistentDataContainer().has(
-                new NamespacedKey(plugin, "jail_stick"),
-                PersistentDataType.BYTE)) {
-            return;
-        }
+        if (!JailItemUtils.isJailStick(item, plugin.getJailStickName())) return;
 
-        // Jail the target
-        plugin.jailPlayer(target, plugin.defaultJailTime);
-        damager.sendMessage(ChatColor.GREEN + "You jailed " + target.getName() + " for " + plugin.defaultJailTime + " seconds!");
-        target.sendMessage(ChatColor.RED + "You've been jailed by " + damager.getName() + " for " + plugin.defaultJailTime + " seconds!");
+        // Jail the target using default duration from config
+        boolean success = plugin.jailPlayer(target, plugin.getConfig().getInt("jail.duration", 10));
+        if (success) {
+            damager.sendMessage(ChatColor.GREEN + "You jailed " + target.getName() + "!");
+            target.sendMessage(ChatColor.RED + "You've been jailed by " + damager.getName() + "!");
+        } else {
+            damager.sendMessage(ChatColor.RED + "Failed to jail player. Jail location not set.");
+        }
     }
 }
-
