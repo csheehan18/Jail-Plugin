@@ -178,8 +178,8 @@ public boolean onCommand(CommandSender sender, Command command, String label, St
         //Remove bottles from player and give to cop
         target.getInventory().remove(Material.EXPERIENCE_BOTTLE);
         target.updateInventory();
-        ItemStack xpBottles = new ItemStack(Material.EXPERIENCE_BOTTLE, totalXpBottles);
         if (attacker != null) {
+            ItemStack xpBottles = new ItemStack(Material.EXPERIENCE_BOTTLE, totalXpBottles);
             attacker.getInventory().addItem(xpBottles);
             attacker.updateInventory();
         }
