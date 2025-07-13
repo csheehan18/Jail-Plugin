@@ -26,12 +26,17 @@ public class JailHitListener implements Listener {
 
         if (!JailItemUtils.isJailStick(item, plugin.getJailStickName())) return;
 
-        boolean success = plugin.jailPlayer(target, plugin.getConfig().getInt("jail.duration", 10));
+        boolean success = plugin.jailPlayer(target, damager, plugin.getConfig().getInt("jail.duration", 10));
+        if (!plugin.getConfig().contains("jail.world")) {
+            damager.sendMessage(ChatColor.RED + "Failed to jail player. Jail location not set.");
+            return;
+        }
         if (success) {
             damager.sendMessage(ChatColor.GREEN + "You jailed " + target.getName() + "!");
             target.sendMessage(ChatColor.RED + "You've been jailed by " + damager.getName() + "!");
         } else {
-            damager.sendMessage(ChatColor.RED + "Failed to jail player. Jail location not set.");
+            damager.sendMessage(ChatColor.RED + "You falsely accused " + target.getName() + "!");
+            target.sendMessage(ChatColor.GREEN + "You've been falsely accused by " + damager.getName() + "!");
         }
     }
 }

@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -123,19 +124,32 @@ public class JailPlugin extends JavaPlugin implements Listener {
                 player.sendMessage(ChatColor.RED + "Invalid time, using default: " + defaultJailDuration + "s");
             }
         }
-        boolean ok = jailPlayer(target, seconds);
+        if (!getConfig().contains("jail.world")) {
+            player.sendMessage(ChatColor.RED + "Failed to jail player. Jail location not set.");
+            return;
+        }
+        boolean ok = jailPlayer(target, null, seconds);
         if (ok) {
             player.sendMessage(ChatColor.YELLOW + target.getName() + " jailed for " + seconds + "s.");
-        } else {
-            player.sendMessage(ChatColor.RED + "Failed to jail. Is jail setup?");
-        }
+        } 
     }
 
-    public boolean jailPlayer(Player target, int seconds) {
-        if (!getConfig().contains("jail.world")) return false;
+    public boolean jailPlayer(Player target, Player attacker, int seconds) {
+        boolean foundContraband = false;
+        for (ItemStack item : target.getInventory().getContents()) {
+            if (item == null) continue;
+            if (item.getType() == Material.EXPERIENCE_BOTTLE)
+                foundContraband = true;
+        }
+        if (!foundContraband && attacker != null) {
+            // Run command on attacker
+            var command = getConfig().getString("jail.command", "");
+            command.replace("<player>", attacker.getName());
+            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+            return false;
+        }
         String wn = getConfig().getString("jail.world");
         World w = Bukkit.getWorld(wn);
-        if (w == null) return false;
 
         Location jailLoc = new Location(w,
             getConfig().getDouble("jail.x"),
