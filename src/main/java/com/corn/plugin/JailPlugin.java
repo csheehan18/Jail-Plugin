@@ -142,13 +142,13 @@ public class JailPlugin extends JavaPlugin implements Listener {
                 if (item == null) continue;
                 if (item.getType() == Material.EXPERIENCE_BOTTLE) {
                     foundContraband = true;
-                    totalXpBottles++;
+                    totalXpBottles += item.getAmount();
                 }
             }
         }
         if (!foundContraband && attacker != null) {
             // Run command on attacker
-            var command = getConfig().getString("jail.command", "");
+            var command = getConfig().getString("jail.run-command", "");
             if (command == null || command.equalsIgnoreCase(""))
                 return false;
             command.replace("<player>", attacker.getName());
