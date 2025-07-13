@@ -35,15 +35,26 @@ public class JailPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         PaperLib.suggestPaper(this);
-        saveDefaultConfig();
-        // Register the main plugin class for join/quit events
+        
+        // Load defaults
+        getConfig().addDefault("jail.duration", 10);
+        getConfig().addDefault("jail.stick-name", "&cJail Stick");
+        getConfig().addDefault("jail.run-command", "say <player> was jailed!");
+
+        // Copy them into config if not already present
+        getConfig().options().copyDefaults(true);
+        saveDefaultConfig(); // only writes if config file is missing
+        saveConfig();        // ensures config file is updated
+
+        // Register events
         getServer().getPluginManager().registerEvents(this, this);
-        // Register the hit listener so /jailc stick actually jails on hit
         getServer().getPluginManager().registerEvents(new JailHitListener(this), this);
 
+        // Load variables AFTER config is finalized
         jailStickName = ChatColor.translateAlternateColorCodes('&',
-            getConfig().getString("jail.stick-name", "&cJail Stick"));
+            getConfig().getString("jail.stick-name"));
         defaultJailDuration = getConfig().getInt("jail.duration", 10);
+
         loadJailedPlayersFromConfig();
     }
 
@@ -169,10 +180,10 @@ public boolean onCommand(CommandSender sender, Command command, String label, St
         if (!foundContraband && attacker != null) {
             // Run command on attacker
             var command = getConfig().getString("jail.run-command", "");
-            if (command == null || command.equalsIgnoreCase(""))
-                return false;
-            command.replace("<player>", attacker.getName());
-            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+            if (!command.isEmpty()) {
+                command = command.replace("<player>", attacker.getName());
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+            }
             return false;
         }
         //Remove bottles from player and give to cop
