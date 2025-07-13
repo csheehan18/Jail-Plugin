@@ -144,6 +144,8 @@ public class JailPlugin extends JavaPlugin implements Listener {
         if (!foundContraband && attacker != null) {
             // Run command on attacker
             var command = getConfig().getString("jail.command", "");
+            if (command == null || command.equalsIgnoreCase(""))
+                return false;
             command.replace("<player>", attacker.getName());
             Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
             return false;
