@@ -1,4 +1,14 @@
+# config.yml
 jail:
-  duration: 10 # duration of how long prisoners are jailed by stick in seconds
+  duration: 10         # default jail time (seconds)
   stick-name: "&cJail Stick"
-  run-command: "" # use <player> where the playerName should be
+  run-command: ""      # e.g. "say <player> was jailed!"
+  world: world         # will be set by /jailc setup
+  x: 0.0
+  y: 64.0
+  z: 0.0
+  yaw: 0.0
+  pitch: 0.0
+
+# The plugin will also create a "jailed:" section at runtime to
+# track currently jailed players and their original locations + endTime.

@@ -8,20 +8,16 @@ description: Provides jail commands and a jail stick to punish players.
 commands:
   jailc:
     description: Jail system commands
-    usage: /jailc <setup|player> [seconds] | stick
-    aliases: [jail]
-
+    usage: /jailc <setup|stick|reload|player> [seconds]
 permissions:
-  # Allows use of any /jailc command
   jailc.use:
-    description: Allows using /jailc
     default: op
   jailc.setup:
-    description: Allows the setup sub-command
-    default: op
-  jailc.jail:
-    description: Allows jailing players
     default: op
   jailc.stick:
-    description: Allows giving yourself the jail stick
     default: op
+  jailc.jail:
+    default: op
+  jailc.reload:
+    default: op
+
