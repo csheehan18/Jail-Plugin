@@ -157,10 +157,12 @@ public class JailPlugin extends JavaPlugin implements Listener {
         }
         //Remove bottles from player and give to cop
         target.getInventory().remove(Material.EXPERIENCE_BOTTLE);
-        ItemStack xpBottles = new ItemStack(Material.EXPERIENCE_BOTTLE, totalXpBottles);
-        attacker.getInventory().addItem(xpBottles);
         target.updateInventory();
-        attacker.updateInventory();
+        ItemStack xpBottles = new ItemStack(Material.EXPERIENCE_BOTTLE, totalXpBottles);
+        if (attacker != null) {
+            attacker.getInventory().addItem(xpBottles);
+            attacker.updateInventory();
+        }
         String wn = getConfig().getString("jail.world");
         World w = Bukkit.getWorld(wn);
 
