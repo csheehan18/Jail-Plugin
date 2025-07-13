@@ -56,34 +56,54 @@ public class JailPlugin extends JavaPlugin implements Listener {
         saveJailedPlayersToConfig();
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!command.getName().equalsIgnoreCase("jailc")) return false;
-
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can run jail commands.");
-            return true;
-        }
-
-        if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
-            showHelp(player);
-            return true;
-        }
-
-        switch (args[0].toLowerCase()) {
-            case "setup":
-                handleSetup(player);
-                break;
-            case "stick":
-                handleStick(player);
-                break;
-            default:
-                handleJail(player, args);
-                break;
-        }
-
+   @Override
+public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (!command.getName().equalsIgnoreCase("jailc")) return false;
+    if (!(sender instanceof Player player)) {
+        sender.sendMessage(ChatColor.RED + "Only players can run jail commands.");
         return true;
     }
+
+    // Check base permission
+    if (!player.hasPermission("jailc.use")) {
+        player.sendMessage(ChatColor.RED + "You don't have permission to use that.");
+        return true;
+    }
+
+    if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
+        showHelp(player);
+        return true;
+    }
+
+    switch (args[0].toLowerCase()) {
+        case "setup":
+            if (!player.hasPermission("jailc.setup")) {
+                player.sendMessage(ChatColor.RED + "You lack permission: jailc.setup");
+                return true;
+            }
+            handleSetup(player);
+            break;
+
+        case "stick":
+            if (!player.hasPermission("jailc.stick")) {
+                player.sendMessage(ChatColor.RED + "You lack permission: jailc.stick");
+                return true;
+            }
+            handleStick(player);
+            break;
+
+        default:
+            // jail subcommand
+            if (!player.hasPermission("jailc.jail")) {
+                player.sendMessage(ChatColor.RED + "You lack permission: jailc.jail");
+                return true;
+            }
+            handleJail(player, args);
+            break;
+    }
+    return true;
+}
+
 
     private void showHelp(Player p) {
         p.sendMessage(ChatColor.YELLOW + "Jail Commands:");

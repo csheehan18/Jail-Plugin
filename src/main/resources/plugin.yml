@@ -10,3 +10,18 @@ commands:
     description: Jail system commands
     usage: /jailc <setup|player> [seconds] | stick
     aliases: [jail]
+
+permissions:
+  # Allows use of any /jailc command
+  jailc.use:
+    description: Allows using /jailc
+    default: op
+  jailc.setup:
+    description: Allows the setup sub-command
+    default: op
+  jailc.jail:
+    description: Allows jailing players
+    default: op
+  jailc.stick:
+    description: Allows giving yourself the jail stick
+    default: op
