@@ -136,10 +136,15 @@ public class JailPlugin extends JavaPlugin implements Listener {
 
     public boolean jailPlayer(Player target, Player attacker, int seconds) {
         boolean foundContraband = false;
-        for (ItemStack item : target.getInventory().getContents()) {
-            if (item == null) continue;
-            if (item.getType() == Material.EXPERIENCE_BOTTLE)
-                foundContraband = true;
+        int totalXpBottles = 0;
+        if (attacker != null) {
+            for (ItemStack item : target.getInventory().getContents()) {
+                if (item == null) continue;
+                if (item.getType() == Material.EXPERIENCE_BOTTLE) {
+                    foundContraband = true;
+                    totalXpBottles++;
+                }
+            }
         }
         if (!foundContraband && attacker != null) {
             // Run command on attacker
@@ -150,6 +155,12 @@ public class JailPlugin extends JavaPlugin implements Listener {
             Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
             return false;
         }
+        //Remove bottles from player and give to cop
+        target.getInventory().remove(Material.EXPERIENCE_BOTTLE);
+        ItemStack xpBottles = new ItemStack(Material.EXPERIENCE_BOTTLE, totalXpBottles);
+        attacker.getInventory().addItem(xpBottles);
+        target.updateInventory();
+        attacker.updateInventory();
         String wn = getConfig().getString("jail.world");
         World w = Bukkit.getWorld(wn);
 
